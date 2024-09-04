@@ -1,12 +1,15 @@
 
 import java.util.Scanner;
 
+import exceptions.NoTicketsAssignedException;
+import exceptions.ResolvedTicketNotFoundException;
+import exceptions.TicketNotFoundException;
 import service.AssignmentService;
 import service.ResolutionService;
 import service.TicketService;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TicketNotFoundException, ResolvedTicketNotFoundException, NoTicketsAssignedException {
         Scanner scanner = new Scanner(System.in);
         TicketService ticketService = new TicketService(scanner);
         AssignmentService assignmentService = new AssignmentService(scanner);

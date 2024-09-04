@@ -2,6 +2,8 @@ package dao;
 
 import java.sql.*;
 
+import exceptions.TicketNotFoundException;
+
 public class TicketDAO {
 
     public void createTicket(int customerId, String issueDescription) {
@@ -21,11 +23,11 @@ public class TicketDAO {
         }
     }
 
-    public void viewTicket(int ticketId) {
+      public void viewTicket(int ticketId) throws TicketNotFoundException {
         String query = "SELECT * FROM Ticket WHERE ticket_id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, ticketId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -36,15 +38,18 @@ public class TicketDAO {
                 System.out.println("Creation Date: " + resultSet.getTimestamp("creation_date"));
                 System.out.println("Issue Description: " + resultSet.getString("issue_description"));
                 System.out.println("Status: " + resultSet.getString("status"));
-
                 System.out.println("================================================");
             } else {
-                System.out.println("Ticket not found.");
-
-                System.out.println("================================================");
+                throw new TicketNotFoundException("Ticket with ID " + ticketId + " not found.");
             }
+        } catch (TicketNotFoundException e) {
+            // Handle custom exception
+            System.out.println(e.getMessage());
+            System.out.println("================================================");
         } catch (Exception e) {
-            System.out.println("Tickets not available to show");
+            // Handle other exceptions (e.g., database connection issues)
+            System.out.println("An error occurred while trying to view the ticket.");
+            System.out.println("================================================");
         }
     }
 

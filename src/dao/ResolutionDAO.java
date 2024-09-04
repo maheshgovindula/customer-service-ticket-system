@@ -2,6 +2,8 @@ package dao;
 
 import java.sql.*;
 
+import exceptions.ResolvedTicketNotFoundException;
+
 public class ResolutionDAO {
 
     public void resolveTicket(int ticketId, String resolutionDetails) {
@@ -22,14 +24,19 @@ public class ResolutionDAO {
         }
     }
 
-    public void viewResolvedTickets(int ticketId) {
+      public void viewResolvedTickets(int ticketId) throws ResolvedTicketNotFoundException {
         String query = "SELECT * FROM Resolution WHERE ticket_id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, ticketId);
             ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.isBeforeFirst()) {
+                // No resolved tickets found, throw custom exception
+                throw new ResolvedTicketNotFoundException("No resolved tickets found for Ticket ID " + ticketId + ".");
+            }
 
             while (resultSet.next()) {
                 System.out.println("Resolution ID: " + resultSet.getInt("resolution_id"));
@@ -37,12 +44,16 @@ public class ResolutionDAO {
                 System.out.println("Resolution Date: " + resultSet.getTimestamp("resolution_date"));
                 System.out.println("Resolution Details: " + resultSet.getString("resolution_details"));
                 System.out.println("Status: " + resultSet.getString("status"));
-
                 System.out.println("================================================");
             }
+        } catch (ResolvedTicketNotFoundException e) {
+            // Handle custom exception
+            System.out.println(e.getMessage());
+            System.out.println("================================================");
         } catch (Exception e) {
-            System.out.println("NO tickets resolved");
-           
+            // Handle other exceptions (e.g., database connection issues)
+            System.out.println("An error occurred while trying to view resolved tickets.");
+            System.out.println("================================================");
         }
     }
 

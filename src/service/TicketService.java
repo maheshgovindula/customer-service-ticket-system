@@ -2,6 +2,7 @@ package service;
 
 import java.util.Scanner;
 import dao.TicketDAO;
+import exceptions.TicketNotFoundException;
 
 public class TicketService {
     private final Scanner scanner;
@@ -12,7 +13,7 @@ public class TicketService {
         this.ticketDAO = new TicketDAO();
     }
 
-    public void processTicketOperations() {
+    public void processTicketOperations() throws TicketNotFoundException {
         while (true) {
             System.out.println("Manage Tickets");
             System.out.println("1. Create Ticket");
@@ -57,7 +58,7 @@ public class TicketService {
         ticketDAO.createTicket(customerId, issueDescription);
     }
 
-    private void viewTicket() {
+    private void viewTicket() throws TicketNotFoundException {
         System.out.print("Enter Ticket ID: ");
         int ticketId = scanner.nextInt();
         ticketDAO.viewTicket(ticketId);

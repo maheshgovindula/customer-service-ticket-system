@@ -1,6 +1,7 @@
 package service;
 import java.util.Scanner;
 import dao.AssignmentDAO;
+import exceptions.NoTicketsAssignedException;
 
 public class AssignmentService {
     private final Scanner scanner;
@@ -11,7 +12,7 @@ public class AssignmentService {
         this.assignmentDAO = new AssignmentDAO();
     }
 
-    public void processAssignmentOperations() {
+    public void processAssignmentOperations() throws NoTicketsAssignedException {
         while (true) {
             System.out.println("Manage Assignments");
             System.out.println("1. Assign Ticket");
@@ -50,6 +51,8 @@ public class AssignmentService {
         int ticketId = scanner.nextInt();
         System.out.print("Enter Representative ID: ");
         int representativeId = scanner.nextInt();
+
+
         try{
             assignmentDAO.assignTicket(ticketId, representativeId);
 
@@ -58,10 +61,10 @@ public class AssignmentService {
         {
             System.out.println("Please check if customer exists or not");
         }
-        
+    
     }
 
-    private void viewAssignedTickets() {
+    private void viewAssignedTickets() throws NoTicketsAssignedException {
         System.out.print("Enter Ticket ID: ");
         int ticketId = scanner.nextInt();
         assignmentDAO.viewAssignedTickets(ticketId);

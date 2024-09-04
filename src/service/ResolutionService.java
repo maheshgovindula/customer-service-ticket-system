@@ -4,6 +4,7 @@ package service;
 
 import java.util.Scanner;
 import dao.ResolutionDAO;
+import exceptions.ResolvedTicketNotFoundException;
 
 public class ResolutionService {
     private final Scanner scanner;
@@ -14,7 +15,7 @@ public class ResolutionService {
         this.resolutionDAO = new ResolutionDAO();
     }
 
-    public void processResolutionOperations() {
+    public void processResolutionOperations() throws ResolvedTicketNotFoundException {
         while (true) {
             System.out.println("Manage Resolutions");
             System.out.println("1. Resolve Ticket");
@@ -55,7 +56,7 @@ public class ResolutionService {
         resolutionDAO.resolveTicket(ticketId, resolutionDetails);
     }
 
-    private void viewResolvedTickets() {
+    private void viewResolvedTickets() throws ResolvedTicketNotFoundException {
         System.out.print("Enter Ticket ID: ");
         int ticketId = scanner.nextInt();
         resolutionDAO.viewResolvedTickets(ticketId);
